@@ -1,4 +1,19 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { createWebHistory, createRouter } from 'vue-router';
+import App from './App.vue';
+import Events from "./events.vue";
 
-createApp(App).mount('#app')
+const app = createApp(App);
+
+app.mount('#app');
+
+const routes = [
+    {
+        path: "/",
+        component: Events
+    },
+    {
+        path: "/users",
+        component: Users
+    }
+];
