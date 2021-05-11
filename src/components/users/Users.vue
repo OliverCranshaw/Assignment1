@@ -1,12 +1,12 @@
 <template>
   <div>
-    Events
+    Users
   </div>
 </template>
 
 <script>
 export default {
-name: "Events.vue"
+name: "Users.vue"
 }
 </script>
 
