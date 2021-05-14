@@ -1,9 +1,38 @@
 <template>
   <el-container>
     <el-header>
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <div>
+            <h1>
+              Events Application
+            </h1>
+          </div>
+        </el-col>
+        <el-col :span="14">
+        </el-col>
+        <el-col :span="4">
+          <div align="right">
+            <el-button @click="loginRedirect" type="primary">Login</el-button>
+          </div>
+        </el-col>
+      </el-row>
     </el-header>
+    <el-divider></el-divider>
     <el-main>
       <el-row type="flex" justify="center">
+        <div align="centre">
+          <h2>
+            Register
+          </h2>
+        </div>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="10">
+          <div align="right">
+            <h5>First Name:</h5>
+          </div>
+        </el-col>
         <el-col :span="4" >
           <div>
             <el-input
@@ -13,9 +42,16 @@
             </el-input>
           </div>
         </el-col>
+        <el-col :span="10">
+        </el-col>
       </el-row>
-      <el-row type="flex" justify="center">
-        <el-col :span="4">
+      <el-row :gutter="10">
+        <el-col :span="10">
+          <div align="right">
+            <h5>Last Name: </h5>
+          </div>
+        </el-col>
+        <el-col :span="4" >
           <div>
             <el-input
                 placeholder="Last name"
@@ -24,9 +60,16 @@
             </el-input>
           </div>
         </el-col>
+        <el-col :span="10">
+        </el-col>
       </el-row>
-      <el-row type="flex" justify="center">
-        <el-col :span="4">
+      <el-row :gutter="10">
+        <el-col :span="10">
+          <div align="right">
+            <h5>Email: </h5>
+          </div>
+        </el-col>
+        <el-col :span="4" >
           <div>
             <el-input
                 placeholder="Email"
@@ -35,24 +78,38 @@
             </el-input>
           </div>
         </el-col>
+        <el-col :span="10">
+        </el-col>
       </el-row>
-      <el-row type="flex" justify="center">
-        <el-col :span="4">
+      <el-row :gutter="10">
+        <el-col :span="10">
+          <div align="right">
+            <h5>Password: </h5>
+          </div>
+        </el-col>
+        <el-col :span="4" >
           <div>
             <el-input placeholder="Password" v-model="password" show-password></el-input>
           </div>
         </el-col>
+        <el-col :span="10">
+        </el-col>
       </el-row>
       <el-row type="flex" justify="center">
         <el-col :span="0">
+          <div v-if="errorFlag" style="color:red;">
+            {{error }}
+          </div>
           <div>
-            <el-button @click="createUser" size="medium" type="primary">Register</el-button>
+            <el-button @click="createUser" type="primary">Register</el-button>
           </div>
         </el-col>
       </el-row>
     </el-main>
   </el-container>
 </template>
+
+
 
 <script>
 import {ref} from "vue";
@@ -111,5 +168,24 @@ export default {
 </script>
 
 <style scoped>
+
+
+.el-header {
+  padding-top: 10px;
+}
+
+
+
+.el-row {
+  margin-bottom: 20px;
+}
+:last-child {
+   margin-bottom: 0;
+ }
+
+
+
+
+
 
 </style>
