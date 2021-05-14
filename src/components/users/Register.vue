@@ -1,24 +1,57 @@
 <template>
-
-  <el-input
-      placeholder="Please input your first name"
-      v-model="firstName"
-      clearable>
-  </el-input>
-
-    <el-input
-        placeholder="Please input your last name"
-        v-model="lastName"
-        clearable>
-    </el-input>
-    <el-input
-        placeholder="Please input your email"
-        v-model="email"
-        clearable>
-    </el-input>
-    <el-input placeholder="Please input your password" v-model="password" show-password></el-input>
-  <el-button @click="createUser" type="primary">Register</el-button>
-
+  <el-container>
+    <el-header>
+    </el-header>
+    <el-main>
+      <el-row type="flex" justify="center">
+        <el-col :span="4" >
+          <div>
+            <el-input
+                placeholder="First name"
+                v-model="firstName"
+                clearable>
+            </el-input>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="center">
+        <el-col :span="4">
+          <div>
+            <el-input
+                placeholder="Last name"
+                v-model="lastName"
+                clearable>
+            </el-input>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="center">
+        <el-col :span="4">
+          <div>
+            <el-input
+                placeholder="Email"
+                v-model="email"
+                clearable>
+            </el-input>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="center">
+        <el-col :span="4">
+          <div>
+            <el-input placeholder="Password" v-model="password" show-password></el-input>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="center">
+        <el-col :span="0">
+          <div>
+            <el-button @click="createUser" size="medium" type="primary">Register</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -57,10 +90,16 @@ export default {
             errorFlag.value = true;
           });
     }
+
+    const loginRedirect = () => {
+      router.push("login")
+    }
+
     return {
       error,
       errorFlag,
       createUser,
+      loginRedirect,
       firstName,
       lastName,
       email,
