@@ -107,13 +107,16 @@
           </div>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center">
-        <el-col :span="0">
+      <el-row :gutter="20">
+        <el-col :span="10"></el-col>
+        <el-col :span="4">
+          <div align="right">
+            <el-button @click="createUser" type="primary">Register</el-button>
+          </div>
+        </el-col>
+        <el-col :span="10">
           <div v-if="errorFlag" style="color:red;">
             {{error }}
-          </div>
-          <div>
-            <el-button @click="createUser" type="primary">Register</el-button>
           </div>
         </el-col>
       </el-row>
