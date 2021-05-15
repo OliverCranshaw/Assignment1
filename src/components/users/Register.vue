@@ -43,6 +43,9 @@
           </div>
         </el-col>
         <el-col :span="10">
+            <div align="left" style="color: red">
+                <span>{{firstNameError}}</span>
+            </div>
         </el-col>
       </el-row>
       <el-row :gutter="10">
@@ -61,6 +64,9 @@
           </div>
         </el-col>
         <el-col :span="10">
+          <div align="left" style="color: red">
+            <span>{{lastNameError}}</span>
+          </div>
         </el-col>
       </el-row>
       <el-row :gutter="10">
@@ -79,6 +85,9 @@
           </div>
         </el-col>
         <el-col :span="10">
+          <div align="left" style="color: red">
+            <span>{{emailError}}</span>
+          </div>
         </el-col>
       </el-row>
       <el-row :gutter="10">
@@ -93,6 +102,9 @@
           </div>
         </el-col>
         <el-col :span="10">
+          <div align="left" style="color: red">
+            <span>{{passwordError}}</span>
+          </div>
         </el-col>
       </el-row>
       <el-row type="flex" justify="center">
@@ -127,6 +139,12 @@ export default {
     const email = ref('')
     const password = ref('')
 
+    const firstNameError = ref("");
+    const lastNameError = ref("");
+    const emailError = ref("");
+    const passwordError = ref("");
+
+
     const getRegisterData = () => {
 
       return {
@@ -137,15 +155,55 @@ export default {
       };
     }
 
+    const checkInputs = () => {
+
+      firstNameError.value = "";
+      lastNameError.value = "";
+      emailError.value = "";
+      passwordError.value = "";
+
+      let valid = true
+
+      if (firstName.value.length < 1) {
+        firstNameError.value = "First name cannot be blank"
+        valid = false
+      }
+      if (lastName.value.length < 1) {
+        lastNameError.value = "Last name cannot be blank"
+        valid = false
+      }
+      if (email.value.length < 1) {
+        emailError.value = "Email cannot be blank"
+        valid = false
+      }
+      if (!(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value))) {
+        emailError.value = "Email must be a valid email"
+        valid = false
+      }
+      if (password.value.length < 8) {
+        passwordError.value = "Password must be at least 8 characters"
+        valid = false
+      }
+      return valid
+    }
+
 
     const createUser = () => {
-      api.register(getRegisterData())
-          .then((response) => {
-            router.push(`${response.data.userId}`)
-          }, (err) => {
-            error.value = err;
-            errorFlag.value = true;
-          });
+
+      if (checkInputs()) {
+        api.register(getRegisterData())
+            .then((response) => {
+              router.push(`${response.data.userId}`)
+            }, (err) => {
+
+              let errString = err.response.statusText.slice(err.response.statusText.indexOf(":") + 2)
+              errString = errString.charAt(0).toUpperCase() + errString.slice(1);
+
+              error.value = errString
+              errorFlag.value = true;
+            });
+      }
+
     }
 
     const loginRedirect = () => {
@@ -153,6 +211,7 @@ export default {
     }
 
     return {
+      checkInputs,
       error,
       errorFlag,
       createUser,
@@ -161,6 +220,10 @@ export default {
       lastName,
       email,
       password,
+      firstNameError,
+      lastNameError,
+      emailError,
+      passwordError,
     }
 
   }
