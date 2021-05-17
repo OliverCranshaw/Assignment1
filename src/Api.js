@@ -1,13 +1,19 @@
 import axios from 'axios'
 
-const instance = axios.create({
+
+export const instance = axios.create({
     baseURL: 'http://localhost:4941/api/v1',
+
 });
 
+export function setAuthHeader(value){
+    instance.defaults.headers.common['X-Authorization'] = value;
+}
+
 export default {
-    register: (registerData) => instance.post('users/register', registerData),
-    login: (loginData) => instance.post('users/login', loginData),
-    logout: () => instance.post(`users/logout`),
+    register: (registerData) => instance.post('users/register', registerData, {withCredentials: false}),
+    login: (loginData) => instance.post('users/login', loginData, {withCredentials: false}),
+    logout: () => instance.post(`users/logout`, {withCredentials: false}),
     getUser: (id) => instance.get(`users/${id}`, null),
     modifyUser: (id) => instance.patch(`users/${id}`, null),
     getUserImage: (id) => instance.get(`users/${id}/image`, null),
@@ -24,7 +30,7 @@ export default {
     getAttendees: (id) => instance.get(`/events/${id}/attendees`),
     createAttendee: (id) => instance.post(`/events/${id}/attendees`),
     deleteAttendee: (id) => instance.delete(`/events/${id}/attendees`),
-    modifyAttendee: (eventId, userId) => instance.patch(`/events/${eventId}/attendees/${userId}`)
+    modifyAttendee: (eventId, userId) => instance.patch(`/events/${eventId}/attendees/${userId}`),
 }
 
 

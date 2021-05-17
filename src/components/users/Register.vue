@@ -130,6 +130,7 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import api from "@/Api";
+import {useStore} from "vuex";
 
 export default {
   name: 'Register',
@@ -147,12 +148,24 @@ export default {
     const emailError = ref("");
     const passwordError = ref("");
 
+    const store = useStore()
+
+
+
 
     const getRegisterData = () => {
 
       return {
         "firstName": firstName.value,
         "lastName": lastName.value,
+        "email": email.value,
+        "password": password.value
+      };
+    }
+
+    const getLoginData = () => {
+
+      return {
         "email": email.value,
         "password": password.value
       };
@@ -195,8 +208,13 @@ export default {
 
       if (checkInputs()) {
         api.register(getRegisterData())
-            .then((response) => {
-              router.push(`${response.data.userId}`)
+            .then(() => {
+              return api.login(getLoginData());
+            })
+            .then((loginResponse) => {
+              store.commit("updateToken", loginResponse.data.token)
+              store.commit("updateUser", loginResponse.data.userId)
+              router.push(`${loginResponse.data.userId}`)
             }, (err) => {
 
               let errString = err.response.statusText.slice(err.response.statusText.indexOf(":") + 2)
