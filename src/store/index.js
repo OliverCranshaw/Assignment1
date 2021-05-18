@@ -23,7 +23,6 @@ export const store = createStore({
         },
 
         updateUser (state, userId) {
-            console.log(userId);
             state.user_id = userId;
         }
     },
@@ -37,7 +36,3 @@ export const store = createStore({
         },
     }
 });
-
-export default {
-    store
-}

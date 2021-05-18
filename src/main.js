@@ -1,20 +1,31 @@
 import { createApp } from 'vue';
-import { store } from '@/store/index'
+import { store } from '@/store'
 import { createWebHistory, createRouter } from 'vue-router';
 import ElementPlus from 'element-plus'
 import axios from 'axios';
 import App from './App.vue';
-import Events from "@/components/events/Events";
+import EventsSearch from "@/components/events/EventsSearch";
 import Register from "@/components/users/Register";
 import Login from "@/components/users/Login";
 import Profile from "@/components/users/Profile";
 import {setAuthHeader} from "@/Api";
+import CreateEvent from "@/components/events/CreateEvent";
+import Event from "@/components/events/Event";
+import NotFound from "@/components/NotFound";
 
 const routes = [
 
     {
         path: "/events",
-        component: Events
+        component: EventsSearch
+    },
+    {
+        path: "/events/create",
+        component: CreateEvent
+    },
+    {
+        path: "/events/:id",
+        component: Event
     },
     {
         path: "/users/register",
@@ -27,10 +38,14 @@ const routes = [
     {
         path: "/users/:id",
         component: Profile
-    }
+    },
+    {
+        path: "/:catchAll(.*)",
+        component: NotFound,
+    },
 ];
 
-const router = createRouter({
+const router = createRouter( {
     routes,
     history: createWebHistory()
 });
@@ -43,7 +58,7 @@ router.beforeEach((to, _from, next) => {
         next(`/users/${store.state.user_id}`);
     }
 
-    if (!['/users/login', '/users/register'].includes(to.path) && !isAuthenticated) {
+    if (!['/users/login', '/users/register', '/events', '/events/'].includes(to.path) && !isAuthenticated) {
         next('/users/login');
     } else {
         next();

@@ -1,12 +1,10 @@
 <template>
-  <div>
-    Events
-  </div>
+  PAGE NOT FOUND
 </template>
 
 <script>
 export default {
-name: "Events"
+  name: "NotFound"
 }
 </script>
 

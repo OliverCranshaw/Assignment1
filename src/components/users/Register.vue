@@ -9,9 +9,10 @@
             </h1>
           </div>
         </el-col>
-        <el-col :span="14">
+        <el-col :span="12" align="center">
+          <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <div align="right">
             <el-button @click="loginRedirect" type="primary">Login</el-button>
           </div>
@@ -35,7 +36,7 @@
         </el-col>
         <el-col :span="4" >
           <div>
-            <el-input
+            <el-input maxlength="30"
                 placeholder="First name"
                 v-model="firstName"
                 clearable>
@@ -56,7 +57,7 @@
         </el-col>
         <el-col :span="4" >
           <div>
-            <el-input
+            <el-input maxlength="30"
                 placeholder="Last name"
                 v-model="lastName"
                 clearable>
@@ -77,7 +78,7 @@
         </el-col>
         <el-col :span="4" >
           <div>
-            <el-input
+            <el-input maxlength="30"
                 placeholder="Email"
                 v-model="email"
                 clearable>
@@ -98,12 +99,29 @@
         </el-col>
         <el-col :span="4" >
           <div>
-            <el-input placeholder="Password" v-model="password" show-password></el-input>
+            <el-input maxlength="30" placeholder="Password" v-model="password" show-password></el-input>
           </div>
         </el-col>
         <el-col :span="10">
           <div align="left" style="color: red">
             <span>{{passwordError}}</span>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="10">
+          <div align="right">
+            <h5>Upload Profile Image (Optional): </h5>
+          </div>
+        </el-col>
+        <el-col :span="4" >
+          <div>
+            <input type="file" accept="image/jpeg,image/png,image/gif" id="file" @change="onChange" >
+          </div>
+        </el-col>
+        <el-col :span="10">
+          <div align="left" style="color: red">
+            <span>{{imageUploadError}}</span>
           </div>
         </el-col>
       </el-row>
@@ -147,11 +165,21 @@ export default {
     const lastNameError = ref("");
     const emailError = ref("");
     const passwordError = ref("");
+    const imageUploadError = ref("");
 
     const store = useStore()
 
 
 
+    let imageFile = null
+
+
+    const fileTooLarge = ref(false)
+
+
+    const routeToSearchEvents = () => {
+      router.push('/events')
+    }
 
     const getRegisterData = () => {
 
@@ -180,6 +208,10 @@ export default {
 
       let valid = true
 
+      if (fileTooLarge.value) {
+        valid = false
+      }
+
       if (firstName.value.length < 1) {
         firstNameError.value = "First name cannot be blank"
         valid = false
@@ -203,6 +235,22 @@ export default {
       return valid
     }
 
+    const onChange = (e) => {
+      imageUploadError.value = ""
+      const file = e.target.files[0]
+
+
+      if (file.size > 20e6) {
+        imageUploadError.value = "File too large"
+        fileTooLarge.value = true
+
+      } else {
+        imageFile = file
+        fileTooLarge.value = false
+      }
+
+    }
+
 
     const createUser = () => {
 
@@ -214,7 +262,11 @@ export default {
             .then((loginResponse) => {
               store.commit("updateToken", loginResponse.data.token)
               store.commit("updateUser", loginResponse.data.userId)
-              router.push(`${loginResponse.data.userId}`)
+
+              if (imageFile != null) {
+                return api.modifyUserImage(loginResponse.data.userId, imageFile, imageFile.type)
+              }
+
             }, (err) => {
 
               let errString = err.response.statusText.slice(err.response.statusText.indexOf(":") + 2)
@@ -222,7 +274,11 @@ export default {
 
               error.value = errString
               errorFlag.value = true;
-            });
+            })
+            .then(() => {
+              router.push(`${store.state.user_id}`)
+            })
+
       }
 
     }
@@ -245,6 +301,10 @@ export default {
       lastNameError,
       emailError,
       passwordError,
+      imageUploadError,
+      onChange,
+      routeToSearchEvents
+
     }
 
   }

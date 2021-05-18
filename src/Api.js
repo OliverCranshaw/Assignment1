@@ -11,13 +11,15 @@ export function setAuthHeader(value){
 }
 
 export default {
-    register: (registerData) => instance.post('users/register', registerData, {withCredentials: false}),
-    login: (loginData) => instance.post('users/login', loginData, {withCredentials: false}),
-    logout: () => instance.post(`users/logout`, {withCredentials: false}),
+    register: (registerData) => instance.post('users/register', registerData),
+    login: (loginData) => instance.post('users/login', loginData),
+    logout: () => instance.post(`users/logout`),
     getUser: (id) => instance.get(`users/${id}`, null),
-    modifyUser: (id) => instance.patch(`users/${id}`, null),
-    getUserImage: (id) => instance.get(`users/${id}/image`, null),
-    modifyUserImage: (id) => instance.put(`users/${id}/image`),
+    modifyUser: (id, userData) => instance.patch(`users/${id}`, userData),
+    getUserImage: (id) => instance.get(`users/${id}/image`, {
+        responseType: 'arraybuffer'}),
+    modifyUserImage: (id, imageData, imageTypeString) => instance.put(`users/${id}/image`, imageData, {
+        headers: { 'Content-Type': `${imageTypeString}` }}),
     deleteUserImage: (id) => instance.delete(`users/${id}/image`),
     searchEvents: () => instance.get(`events`),
     createEvent: () => instance.post('events', ),

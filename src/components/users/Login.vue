@@ -9,9 +9,10 @@
             </h1>
           </div>
         </el-col>
-        <el-col :span="14">
+        <el-col :span="12" align="center">
+          <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <div align="right">
             <el-button @click="registerRedirect" type="primary">Register</el-button>
           </div>
@@ -35,7 +36,7 @@
         </el-col>
         <el-col :span="4" >
           <div>
-            <el-input
+            <el-input maxlength="30"
                 placeholder="Email"
                 v-model="email"
                 clearable>
@@ -53,7 +54,7 @@
         </el-col>
         <el-col :span="4" >
           <div>
-            <el-input
+            <el-input maxlength="30"
                 placeholder="Password"
                 v-model="password"
                 show-password>
@@ -99,6 +100,9 @@ export default {
     const store = useStore()
 
 
+    const routeToSearchEvents = () => {
+      router.push('/events')
+    }
 
     const getLoginData = () => {
 
@@ -163,7 +167,8 @@ export default {
       registerRedirect,
       email,
       password,
-      store
+      store,
+      routeToSearchEvents
     }
 
   }
