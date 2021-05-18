@@ -21,13 +21,15 @@ export default {
     modifyUserImage: (id, imageData, imageTypeString) => instance.put(`users/${id}/image`, imageData, {
         headers: { 'Content-Type': `${imageTypeString}` }}),
     deleteUserImage: (id) => instance.delete(`users/${id}/image`),
-    searchEvents: () => instance.get(`events`),
+    searchEvents: (searchQuery) => instance.get(`events?q=${searchQuery}`),
+    getAllEvents: () => instance.get(`events`),
     createEvent: () => instance.post('events', ),
-    getCategories: () => instance.get('events/categories', ),
+    getCategories: () => instance.get('events/categories'),
     getEvent: (id) => instance.get(`/events/${id}`),
     modifyEvent: (id) => instance.patch(`/events/${id}`),
     deleteEvent: (id) => instance.delete(`/events/${id}`),
-    getEventImage: (id) => instance.get(`/events/${id}/image`),
+    getEventImage: (id) => instance.get(`/events/${id}/image`, {
+        responseType: 'arraybuffer'}),
     modifyEventImage: (id) => instance.put(`/events/${id}/image`),
     getAttendees: (id) => instance.get(`/events/${id}/attendees`),
     createAttendee: (id) => instance.post(`/events/${id}/attendees`),
