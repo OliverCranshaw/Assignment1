@@ -12,6 +12,7 @@ import {setAuthHeader} from "@/Api";
 import CreateEvent from "@/components/events/CreateEvent";
 import Event from "@/components/events/Event";
 import NotFound from "@/components/NotFound";
+import Landing from "@/components/Landing";
 
 const routes = [
 
@@ -42,6 +43,10 @@ const routes = [
     {
         path: "/:catchAll(.*)",
         component: NotFound,
+    },
+    {
+        path: "",
+        component: Landing,
     },
 ];
 

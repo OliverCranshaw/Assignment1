@@ -21,16 +21,19 @@ export default {
     modifyUserImage: (id, imageData, imageTypeString) => instance.put(`users/${id}/image`, imageData, {
         headers: { 'Content-Type': `${imageTypeString}` }}),
     deleteUserImage: (id) => instance.delete(`users/${id}/image`),
-    searchEvents: (searchQuery) => instance.get(`events?q=${searchQuery}`),
+    searchEvents: (searchQuery) => instance.get(`events`, {params: {q: searchQuery}}),
+    filterEvents: (filterQuery) => instance.get(`events`, {params: {categoryIds: filterQuery}}),
+    searchFilterEvents: (searchQuery, filterQuery) => instance.get(`events`, {params: {q: searchQuery, categoryIds: filterQuery}}),
     getAllEvents: () => instance.get(`events`),
-    createEvent: () => instance.post('events', ),
+    createEvent: (eventData) => instance.post('events', eventData),
     getCategories: () => instance.get('events/categories'),
     getEvent: (id) => instance.get(`/events/${id}`),
     modifyEvent: (id) => instance.patch(`/events/${id}`),
     deleteEvent: (id) => instance.delete(`/events/${id}`),
     getEventImage: (id) => instance.get(`/events/${id}/image`, {
         responseType: 'arraybuffer'}),
-    modifyEventImage: (id) => instance.put(`/events/${id}/image`),
+    modifyEventImage: (id, imageData, imageTypeString) => instance.put(`/events/${id}/image`, imageData, {
+        headers: { 'Content-Type': `${imageTypeString}` }}),
     getAttendees: (id) => instance.get(`/events/${id}/attendees`),
     createAttendee: (id) => instance.post(`/events/${id}/attendees`),
     deleteAttendee: (id) => instance.delete(`/events/${id}/attendees`),

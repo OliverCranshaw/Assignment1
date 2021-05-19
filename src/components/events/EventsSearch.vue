@@ -1,31 +1,12 @@
 <template>
   <el-container>
     <el-header>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div>
-            <h1>
-              Events Application
-            </h1>
-          </div>
-        </el-col>
-        <el-col :span="12" align="center">
-          <el-button v-if="authenticated" @click="routeToCreateEvent" type="primary">Create Event</el-button>
-        </el-col>
-        <el-col :span="6">
-          <div align="right">
-            <el-button v-if="authenticated" @click="routeToProfile" type="primary">Profile</el-button>
-            <el-button v-else @click="registerRedirect" type="primary">Register</el-button>
-            <el-button v-if="authenticated" @click="logoutRequest" type="primary">Logout</el-button>
-            <el-button v-else @click="loginRedirect" type="primary">Login</el-button>
-          </div>
-        </el-col>
-      </el-row>
+      <Header></Header>
     </el-header>
     <el-divider></el-divider>
     <el-main>
       <el-row :gutter="10">
-        <el-col :span="5">
+        <el-col :span="4">
         </el-col>
         <el-col :span="4" >
           <div align="left">
@@ -36,12 +17,28 @@
             </el-input>
           </div>
         </el-col>
+        <el-col :span="3">
+          <div align="left">
+            <el-select
+                v-model="filterOptions"
+                multiple
+                collapse-tags
+                placeholder="Category Filter">
+              <el-option
+                  v-for="item in catList"
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
+        </el-col>
         <el-col :span="2">
           <div align="left">
             <el-button @click="searchRequest" type="primary">Search</el-button>
           </div>
         </el-col>
-        <el-col :span="13">
+        <el-col :span="9">
           <div align="left">
             <h5>Double Click an event to view further details</h5>
           </div>
@@ -54,7 +51,7 @@
           <div align="center">
             <el-table
                 :data="pagedTableData"
-                :default-sort = "{prop: 'date', order: 'descending'}"
+                :default-sort = "{prop: 'date', order: 'ascending'}"
                 stripe
                 @row-dblclick="eventRouter"
                 style="width: 100%">
@@ -132,14 +129,16 @@
 <script>
 import api from "@/Api";
 import {useRouter} from "vue-router";
-import {useStore} from "vuex";
 import {onMounted, ref, computed} from 'vue';
+import Header from '@/components/Header'
 
 export default {
   name: "EventsSearch",
+  components: {
+    Header,
+  },
   setup() {
 
-    const store = useStore()
     const router = useRouter()
 
     const searchInput = ref("")
@@ -149,48 +148,148 @@ export default {
 
     const catList = ref([])
 
-    const authenticated = store.getters.isAuthenticated
-
-    const routeToProfile = () => {
-      router.push(`/users/${store.state.user_id}`)
-    }
-    const routeToCreateEvent = () => {
-      router.push('/events/create')
-    }
-
-    const loginRedirect = () => {
-      router.push("/users/login")
-    }
-
-    const registerRedirect = () => {
-      router.push("/users/register")
-    }
-
-    const logoutRequest = () => {
-      api.logout()
-          .then(() => {
-            store.commit("updateToken", "")
-            store.commit("updateUser", null)
-            router.push(`login`)
-
-          }, (err) => {
-
-            console.log(err.response.statusText)
-            store.commit("updateToken", "")
-            store.commit("updateUser", null)
-            router.push(`login`)
-
-
-          });
-    }
-
+    const filterOptions = ref([])
 
     const searchRequest = () => {
 
-      if (searchInput.value.length < 1) {
+      if (searchInput.value.length < 1 && filterOptions.value.length < 1) {
         getAllEvents()
-      } else {
+      } else if (filterOptions.value.length < 1) {
         api.searchEvents(searchInput.value)
+            .then((response) => {
+
+              tableData.value = response.data
+
+              for (const row in tableData.value) {
+
+                tableData.value[row].hostName = `${tableData.value[row].organizerFirstName} ${tableData.value[row].organizerLastName}`
+                tableData.value[row].date = tableData.value[row].date.slice(0, -8)
+                tableData.value[row].date = tableData.value[row].date.replace("T", ", ")
+
+
+                for (const cat in tableData.value[row].categories) {
+                  for (const catId in catList.value)
+                    if (catList.value[catId].id == tableData.value[row].categories[cat]) {
+                      tableData.value[row].categories[cat] = " " + catList.value[catId].name
+                    }
+                }
+
+
+                api.getEventImage(tableData.value[row].eventId)
+                    .then((response) => {
+
+                      let imageURL = "data:"
+                      imageURL += response.headers['content-type']
+                      imageURL += ";base64,"
+                      imageURL += Buffer.from(response.data, 'binary').toString('base64')
+
+                      tableData.value[row].eventImageURL = imageURL
+
+                    }, (err) => {
+                      console.log(err)
+
+
+                    });
+
+                api.getEvent(tableData.value[row].eventId)
+                    .then((response) => {
+                      api.getUserImage(response.data.organizerId)
+                          .then((response) => {
+
+
+                            let imageURL = "data:"
+                            imageURL += response.headers['content-type']
+                            imageURL += ";base64,"
+                            imageURL += Buffer.from(response.data, 'binary').toString('base64')
+                            tableData.value[row].hostImageURL = imageURL
+
+                          }, () => {
+                            tableData.value[row].hostImageURL = '/img/defaultProfile.d8a851d0.jpg'
+
+
+                          });
+
+                    }, (err) => {
+                      console.log(err)
+
+
+                    });
+              }
+
+            }, (err) => {
+              console.log(err)
+
+
+            });
+      } else if (searchInput.value.length < 1) {
+        api.filterEvents(filterOptions.value)
+            .then((response) => {
+
+              tableData.value = response.data
+
+              for (const row in tableData.value) {
+
+                tableData.value[row].hostName = `${tableData.value[row].organizerFirstName} ${tableData.value[row].organizerLastName}`
+                tableData.value[row].date = tableData.value[row].date.slice(0, -8)
+                tableData.value[row].date = tableData.value[row].date.replace("T", ", ")
+
+
+                for (const cat in tableData.value[row].categories) {
+                  for (const catId in catList.value)
+                    if (catList.value[catId].id == tableData.value[row].categories[cat]) {
+                      tableData.value[row].categories[cat] = " " + catList.value[catId].name
+                    }
+                }
+
+
+                api.getEventImage(tableData.value[row].eventId)
+                    .then((response) => {
+
+                      let imageURL = "data:"
+                      imageURL += response.headers['content-type']
+                      imageURL += ";base64,"
+                      imageURL += Buffer.from(response.data, 'binary').toString('base64')
+
+                      tableData.value[row].eventImageURL = imageURL
+
+                    }, (err) => {
+                      console.log(err)
+
+
+                    });
+
+                api.getEvent(tableData.value[row].eventId)
+                    .then((response) => {
+                      api.getUserImage(response.data.organizerId)
+                          .then((response) => {
+
+
+                            let imageURL = "data:"
+                            imageURL += response.headers['content-type']
+                            imageURL += ";base64,"
+                            imageURL += Buffer.from(response.data, 'binary').toString('base64')
+                            tableData.value[row].hostImageURL = imageURL
+
+                          }, () => {
+                            tableData.value[row].hostImageURL = '/img/defaultProfile.d8a851d0.jpg'
+
+
+                          });
+
+                    }, (err) => {
+                      console.log(err)
+
+
+                    });
+              }
+
+            }, (err) => {
+              console.log(err)
+
+
+            });
+      } else {
+        api.searchFilterEvents(searchInput.value, filterOptions.value)
             .then((response) => {
 
               tableData.value = response.data
@@ -337,6 +436,7 @@ export default {
           });
     }
 
+
     const eventRouter = (row) => {
       router.push(`/events/${row.eventId}`)
     }
@@ -356,18 +456,14 @@ export default {
 
 
     return {
-      routeToProfile,
-      routeToCreateEvent,
-      logoutRequest,
-      loginRedirect,
-      authenticated,
-      registerRedirect,
       searchInput,
       tableData,
       searchRequest,
       setPage,
       pagedTableData,
-      eventRouter
+      eventRouter,
+      filterOptions,
+      catList,
     }
   }
 

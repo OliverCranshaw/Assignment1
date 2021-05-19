@@ -1,25 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div>
-            <h1>
-              Events Application
-            </h1>
-          </div>
-        </el-col>
-        <el-col :span="12" align="center">
-          <el-button @click="routeToCreateEvent" type="primary">Create Event</el-button>
-          <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
-        </el-col>
-        <el-col :span="6">
-          <div align="right">
-            <el-button @click="routeToProfile" type="primary">Profile</el-button>
-            <el-button @click="logoutRequest" type="primary">Logout</el-button>
-          </div>
-        </el-col>
-      </el-row>
+      <Header></Header>
     </el-header>
     <el-divider></el-divider>
     <el-main>
@@ -234,9 +216,14 @@ import {useRoute, useRouter} from "vue-router";
 import api from "@/Api";
 import {useStore} from "vuex";
 import {onMounted, ref} from 'vue'
+import Header from "@/components/Header";
 
 export default {
   name: 'Profile',
+  components: {
+    Header
+  },
+
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -276,15 +263,6 @@ export default {
 
     }
 
-    const routeToProfile = () => {
-      router.push(`${store.state.user_id}`)
-    }
-    const routeToCreateEvent = () => {
-      router.push('/events/create')
-    }
-    const routeToSearchEvents = () => {
-      router.push('/events')
-    }
 
     const onChange = (e) => {
       imageUploadError.value = ""
@@ -335,24 +313,6 @@ export default {
 
           })
 
-    }
-
-    const logoutRequest = () => {
-      api.logout()
-          .then(() => {
-            store.commit("updateToken", "")
-            store.commit("updateUser", null)
-            router.push(`login`)
-
-          }, (err) => {
-
-            console.log(err.response.statusText)
-            store.commit("updateToken", "")
-            store.commit("updateUser", null)
-            router.push(`login`)
-
-
-          });
     }
 
     const editRequest = () => {
@@ -463,7 +423,6 @@ export default {
     onMounted(getUserImage)
 
     return {
-      logoutRequest,
       firstName,
       lastName,
       email,
@@ -488,9 +447,6 @@ export default {
       imageUploadError,
       onChange,
       deleteImageRequest,
-      routeToCreateEvent,
-      routeToProfile,
-      routeToSearchEvents,
     }
 
   }

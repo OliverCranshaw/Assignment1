@@ -1,23 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div>
-            <h1>
-              Events Application
-            </h1>
-          </div>
-        </el-col>
-        <el-col :span="12" align="center">
-          <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
-        </el-col>
-        <el-col :span="6">
-          <div align="right">
-            <el-button @click="loginRedirect" type="primary">Login</el-button>
-          </div>
-        </el-col>
-      </el-row>
+      <Header></Header>
     </el-header>
     <el-divider></el-divider>
     <el-main>
@@ -149,9 +133,14 @@ import {ref} from "vue";
 import {useRouter} from "vue-router";
 import api from "@/Api";
 import {useStore} from "vuex";
+import Header from "@/components/Header";
 
 export default {
   name: 'Register',
+  components: {
+    Header
+  },
+
   setup() {
     const router = useRouter();
     const error = ref("");
@@ -176,10 +165,6 @@ export default {
 
     const fileTooLarge = ref(false)
 
-
-    const routeToSearchEvents = () => {
-      router.push('/events')
-    }
 
     const getRegisterData = () => {
 
@@ -283,16 +268,11 @@ export default {
 
     }
 
-    const loginRedirect = () => {
-      router.push("login")
-    }
-
     return {
       checkInputs,
       error,
       errorFlag,
       createUser,
-      loginRedirect,
       firstName,
       lastName,
       email,
@@ -303,7 +283,6 @@ export default {
       passwordError,
       imageUploadError,
       onChange,
-      routeToSearchEvents
 
     }
 

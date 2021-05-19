@@ -1,23 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div>
-            <h1>
-              Events Application
-            </h1>
-          </div>
-        </el-col>
-        <el-col :span="12" align="center">
-          <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
-        </el-col>
-        <el-col :span="6">
-          <div align="right">
-            <el-button @click="registerRedirect" type="primary">Register</el-button>
-          </div>
-        </el-col>
-      </el-row>
+      <Header></Header>
     </el-header>
     <el-divider></el-divider>
     <el-main>
@@ -86,23 +70,23 @@ import {useRouter} from "vue-router";
 import {ref} from "vue";
 import api from "@/Api";
 import { useStore } from 'vuex'
+import Header from "@/components/Header";
 
 
 export default {
   name: 'Login',
+  components: {
+    Header
+  },
+
   setup() {
     const router = useRouter();
     const error = ref("");
     const errorFlag = ref(false);
     const email = ref('')
     const password = ref('')
-
     const store = useStore()
 
-
-    const routeToSearchEvents = () => {
-      router.push('/events')
-    }
 
     const getLoginData = () => {
 
@@ -155,26 +139,16 @@ export default {
       }
     }
 
-
-    const registerRedirect = () => {
-      router.push("register")
-    }
-
     return {
       loginRequest,
       error,
       errorFlag,
-      registerRedirect,
       email,
       password,
       store,
-      routeToSearchEvents
     }
 
   }
-}
-
-export class store {
 }
 </script>
 

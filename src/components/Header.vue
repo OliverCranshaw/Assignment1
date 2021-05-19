@@ -1,33 +1,39 @@
 <template>
-  <el-container>
-    <el-header>
-      <Header></Header>
-    </el-header>
-    <el-divider></el-divider>
-    <el-main>
-       VIEW EVENT
-    </el-main>
-  </el-container>
+  <el-row :gutter="20">
+    <el-col :span="6">
+      <div>
+        <h1>
+          Events Application
+        </h1>
+      </div>
+    </el-col>
+    <el-col :span="12" align="center">
+      <el-button v-if="authenticated" @click="routeToCreateEvent" type="primary">Create Event</el-button>
+      <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
+    </el-col>
+    <el-col :span="6">
+      <div align="right">
+        <el-button v-if="authenticated" @click="routeToProfile" type="primary">Profile</el-button>
+        <el-button v-else @click="registerRedirect" type="primary">Register</el-button>
+        <el-button v-if="authenticated" @click="logoutRequest" type="primary">Logout</el-button>
+        <el-button v-else @click="loginRedirect" type="primary">Login</el-button>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
-import api from "@/Api";
-import {useRouter} from "vue-router";
 import {useStore} from "vuex";
-import Header from "@/components/Header";
+import {useRouter} from "vue-router";
+import api from "@/Api";
 
 export default {
-  name: "EventsSearch",
-  components: {
-    Header
-  },
+name: "Header",
   setup() {
-
     const store = useStore()
     const router = useRouter()
 
     const authenticated = store.getters.isAuthenticated
-
 
     const routeToProfile = () => {
       router.push(`/users/${store.state.user_id}`)
@@ -35,6 +41,7 @@ export default {
     const routeToCreateEvent = () => {
       router.push('/events/create')
     }
+
     const routeToSearchEvents = () => {
       router.push('/events')
     }
@@ -65,34 +72,20 @@ export default {
           });
     }
 
-
-
     return {
       authenticated,
       routeToProfile,
-      routeToSearchEvents,
       routeToCreateEvent,
-      logoutRequest,
+      routeToSearchEvents,
       loginRedirect,
-      registerRedirect,
+      logoutRequest,
+      registerRedirect
     }
+
   }
-
-
 }
 </script>
 
 <style scoped>
 
-.el-header {
-  padding-top: 10px;
-}
-
-
-.el-row {
-  margin-bottom: 20px;
-}
-:last-child {
-  margin-bottom: 0;
-}
 </style>
