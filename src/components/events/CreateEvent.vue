@@ -85,14 +85,14 @@
               <br>
               <span>Online requires a URL, In-Person requires a venue</span>
             </el-form-item>
-            <el-form-item v-if="isOnline">
+            <el-form-item>
               <label><b>URL:</b></label>
               <el-input id="urlInput" placeholder="Please input event URL" v-model="eventUrl" type="url">
                 <template #prepend>https://</template>
               </el-input>
               <span class="error">{{ errorMsg.eventUrl }}</span>
             </el-form-item>
-            <el-form-item v-else>
+            <el-form-item v-if="!isOnline">
               <label><b>Venue:</b></label>
               <el-input id="venueInput" placeholder="Please input event venue" v-model="venue"
                         type="text"></el-input>
