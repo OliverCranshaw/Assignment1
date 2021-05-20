@@ -5,76 +5,135 @@
     </el-header>
     <el-divider></el-divider>
     <el-main>
-       VIEW EVENT
+      <el-row>
+        <el-col :span="15" align="center">
+          <div>
+            <h1>
+              Event Data {{eventData.categories}}
+            </h1>
+          </div>
+        </el-col>
+        <el-col :span="9" align="center">
+          <div>
+            <h1> Similar Events: </h1>
+          </div>
+          <div class="similarTable">
+            <el-table
+                :data="similarEvents"
+                stripe
+                @row-dblclick="eventRouter"
+                style="width: 100%">
+              <el-table-column
+                  prop="date"
+                  label="Date and Time"
+                  width="150">
+              </el-table-column>
+              <el-table-column
+                  prop="title"
+                  label="Title"
+                  width="200">
+              </el-table-column>
+              <el-table-column
+                  prop="categories"
+                  label="Categories"
+                  width="255">
+              </el-table-column>
+              <el-table-column
+                  prop="numAcceptedAttendees"
+                  label="Attendance"
+                  width="100">
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-col>
+      </el-row>
+
     </el-main>
   </el-container>
 </template>
 
 <script>
-import api from "@/Api";
-import {useRouter} from "vue-router";
-import {useStore} from "vuex";
+
 import Header from "@/components/Header";
+import api from '@/Api'
+import {onMounted, ref} from 'vue'
+import {useRoute, useRouter} from "vue-router";
 
 export default {
-  name: "EventsSearch",
+  name: "Event",
   components: {
     Header
   },
   setup() {
 
-    const store = useStore()
     const router = useRouter()
+    const route = useRoute()
 
-    const authenticated = store.getters.isAuthenticated
+    const eventData = ref({})
+    const similarEvents = ref([])
+    const catList = ref([])
 
 
-    const routeToProfile = () => {
-      router.push(`/users/${store.state.user_id}`)
-    }
-    const routeToCreateEvent = () => {
-      router.push('/events/create')
-    }
-    const routeToSearchEvents = () => {
-      router.push('/events')
-    }
+    const getEventData = () => {
 
-    const loginRedirect = () => {
-      router.push("/users/login")
-    }
+      api.getEvent(route.params.id)
+        .then((response) => {
+          eventData.value = response.data
+          return api.getSimilarEvents(response.data.categories)
+        }, (err) => {
+          console.log(err)
+        })
+          .then((response) => {
 
-    const registerRedirect = () => {
-      router.push("/users/register")
-    }
+            for (const row in response.data) {
+              if (!(response.data[row].eventId == route.params.id)) {
+                response.data[row].date = response.data[row].date.slice(0, -8)
+                response.data[row].date = response.data[row].date.replace("T", ", ")
 
-    const logoutRequest = () => {
-      api.logout()
-          .then(() => {
-            store.commit("updateToken", "")
-            store.commit("updateUser", null)
-            router.push(`login`)
+                for (const cat in response.data[row].categories) {
+                  for (const catId in catList.value)
+                    if (catList.value[catId].id == response.data[row].categories[cat]) {
+                      response.data[row].categories[cat] = " " + catList.value[catId].name
+                    }
+                }
+                similarEvents.value.push(response.data[row])
+              }
+            }
 
           }, (err) => {
+            console.log(err)
+          })
 
-            console.log(err.response.statusText)
-            store.commit("updateToken", "")
-            store.commit("updateUser", null)
-            router.push(`login`)
+    }
 
+    const getCategories = () => {
+      api.getCategories()
+          .then((response) => {
+            catList.value = response.data
+          }, (err) => {
+            console.log(err)
 
           });
+
     }
+
+    const eventRouter = (row) => {
+      router.push({ name: 'EventView', params: { id: `${row.eventId}`}})
+
+    }
+
+    onMounted(getCategories)
+    onMounted(getEventData)
+
+
+
 
 
 
     return {
-      authenticated,
-      routeToProfile,
-      routeToSearchEvents,
-      routeToCreateEvent,
-      logoutRequest,
-      loginRedirect,
-      registerRedirect,
+      eventData,
+      similarEvents,
+      eventRouter,
     }
   }
 
@@ -87,12 +146,11 @@ export default {
 .el-header {
   padding-top: 10px;
 }
-
-
 .el-row {
   margin-bottom: 20px;
 }
 :last-child {
   margin-bottom: 0;
 }
+
 </style>

@@ -228,10 +228,11 @@ export default {
       }
       
       let currentDateTime = new Date();
+
       if (date.value == '') {
         errorMsg.value.date = 'You must provide an event date'
         valid = false
-      } else if (date.value < currentDateTime) {
+      } else if (date.value.getDate() <= currentDateTime.getDate()) {
         errorMsg.value.date = 'The date must be in the future'
         valid = false
       } else {
@@ -251,11 +252,10 @@ export default {
       } else {
         errorMsg.value.description = null
       }
-      
       if (maxCapacity.value == '') {
         errorMsg.value.maxCapacity = 'You must enter a maximum capacity'
         valid = false
-      } else if (!(Number.isInteger(maxCapacity.value))) {
+      } else if (maxCapacity.value != null && (!(Number.isInteger(Number(maxCapacity.value))) || Number(maxCapacity.value) < 1)) {
         errorMsg.value.maxCapacity = 'You must enter a positive integer'
         valid = false
       } else {

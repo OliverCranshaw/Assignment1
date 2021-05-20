@@ -26,7 +26,8 @@ const routes = [
     },
     {
         path: "/events/:id",
-        component: Event
+        component: Event,
+        name: 'EventView'
     },
     {
         path: "/users/register",
@@ -62,8 +63,8 @@ router.beforeEach((to, _from, next) => {
     if (['/users/login', '/users/register'].includes(to.path) && isAuthenticated) {
         next(`/users/${store.state.user_id}`);
     }
-
-    if (!['/users/login', '/users/register', '/events', '/events/'].includes(to.path) && !isAuthenticated) {
+    const parameter = to.params.id
+    if (!['/users/login', '/users/register', '/events', `/events/${parameter}`].includes(to.path) && !isAuthenticated) {
         next('/users/login');
     } else {
         next();

@@ -21,13 +21,14 @@ export default {
     modifyUserImage: (id, imageData, imageTypeString) => instance.put(`users/${id}/image`, imageData, {
         headers: { 'Content-Type': `${imageTypeString}` }}),
     deleteUserImage: (id) => instance.delete(`users/${id}/image`),
-    searchEvents: (searchQuery) => instance.get(`events`, {params: {q: searchQuery}}),
-    filterEvents: (filterQuery) => instance.get(`events`, {params: {categoryIds: filterQuery}}),
-    searchFilterEvents: (searchQuery, filterQuery) => instance.get(`events`, {params: {q: searchQuery, categoryIds: filterQuery}}),
-    getAllEvents: () => instance.get(`events`),
+    searchEvents: (searchQuery, sortOptions) => instance.get(`events`, {params: {q: searchQuery, sortBy: sortOptions}}),
+    filterEvents: (filterQuery, sortOptions) => instance.get(`events`, {params: {categoryIds: filterQuery, sortBy: sortOptions}}),
+    searchFilterEvents: (searchQuery, filterQuery, sortOptions) => instance.get(`events`, {params: {q: searchQuery, categoryIds: filterQuery, sortBy: sortOptions}}),
+    getAllEvents: (sortOptions) => instance.get(`events`, {params: {sortBy: sortOptions}}),
     createEvent: (eventData) => instance.post('events', eventData),
     getCategories: () => instance.get('events/categories'),
     getEvent: (id) => instance.get(`/events/${id}`),
+    getSimilarEvents: (filterQuery) => instance.get(`events`, {params: {categoryIds: filterQuery, sortBy: 'DATE_ASC'}}),
     modifyEvent: (id) => instance.patch(`/events/${id}`),
     deleteEvent: (id) => instance.delete(`/events/${id}`),
     getEventImage: (id) => instance.get(`/events/${id}/image`, {

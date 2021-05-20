@@ -54,13 +54,14 @@
                 :default-sort = "{prop: 'date', order: 'ascending'}"
                 stripe
                 @row-dblclick="eventRouter"
+                @sort-change="sortOptionsSet"
                 style="width: 100%">
               <el-table-column
                   prop="eventImageURL"
                   label="Image"
                   width="80">
                   <template v-slot="scope">
-                    <img  :src="scope.row.eventImageURL" width="50" height="50"/>
+                    <img :src="scope.row.eventImageURL" width="50" height="50"/>
                   </template>
               </el-table-column>
               <el-table-column
@@ -72,8 +73,7 @@
               <el-table-column
                   prop="title"
                   label="Title"
-                  width="240"
-                  sortable>
+                  width="240">
               </el-table-column>
               <el-table-column
                   prop="categories"
@@ -91,8 +91,7 @@
               <el-table-column
                   prop="hostName"
                   label=""
-                  width="150"
-                  sortable>
+                  width="150">
               </el-table-column>
               <el-table-column
                   prop="numAcceptedAttendees"
@@ -149,16 +148,23 @@ export default {
     const catList = ref([])
 
     const filterOptions = ref([])
+    const sortOptions = ref('DATE_ASC')
 
     const searchRequest = () => {
+
+      tableData.value = []
 
       if (searchInput.value.length < 1 && filterOptions.value.length < 1) {
         getAllEvents()
       } else if (filterOptions.value.length < 1) {
-        api.searchEvents(searchInput.value)
+        api.searchEvents(searchInput.value, sortOptions.value)
             .then((response) => {
 
-              tableData.value = response.data
+              for (const row in response.data) {
+                if (response.data[row].title.toLowerCase().includes(searchInput.value.toLowerCase())) {
+                  tableData.value.push(response.data[row])
+                }
+              }
 
               for (const row in tableData.value) {
 
@@ -222,7 +228,7 @@ export default {
 
             });
       } else if (searchInput.value.length < 1) {
-        api.filterEvents(filterOptions.value)
+        api.filterEvents(filterOptions.value, sortOptions.value)
             .then((response) => {
 
               tableData.value = response.data
@@ -289,10 +295,14 @@ export default {
 
             });
       } else {
-        api.searchFilterEvents(searchInput.value, filterOptions.value)
+        api.searchFilterEvents(searchInput.value, filterOptions.value, sortOptions.value)
             .then((response) => {
 
-              tableData.value = response.data
+              for (const row in response.data) {
+                if (response.data[row].title.toLowerCase().includes(searchInput.value.toLowerCase())) {
+                  tableData.value.push(response.data[row])
+                }
+              }
 
               for (const row in tableData.value) {
 
@@ -352,8 +362,6 @@ export default {
 
             }, (err) => {
               console.log(err)
-
-
             });
       }
     }
@@ -370,7 +378,7 @@ export default {
     }
 
     const getAllEvents = () => {
-      api.getAllEvents()
+      api.getAllEvents(sortOptions.value)
           .then((response) => {
 
             tableData.value = response.data
@@ -436,6 +444,21 @@ export default {
           });
     }
 
+    const sortOptionsSet = (props) => {
+      if (props.prop === null && props.order === null) {
+        sortOptions.value = "DATE_DESC"
+      } else if (props.prop === 'date' && props.order === 'descending') {
+        sortOptions.value = "DATE_DESC"
+      } else if (props.prop === 'date' && props.order === 'ascending') {
+        sortOptions.value = "DATE_ASC"
+      } else if (props.prop === 'numAcceptedAttendees' && props.order === 'ascending') {
+        sortOptions.value = "ATTENDEES_ASC"
+      } else if (props.prop === 'numAcceptedAttendees' && props.order === 'descending') {
+        sortOptions.value = "ATTENDEES_DESC"
+      }
+      searchRequest()
+    }
+
 
     const eventRouter = (row) => {
       router.push(`/events/${row.eventId}`)
@@ -464,6 +487,7 @@ export default {
       eventRouter,
       filterOptions,
       catList,
+      sortOptionsSet,
     }
   }
 
