@@ -22,7 +22,8 @@
                 :data="similarEvents"
                 stripe
                 @row-dblclick="eventRouter"
-                style="width: 100%">
+                style="width: 100%"
+                max-height="700">
               <el-table-column
                   prop="date"
                   label="Date and Time"
@@ -124,10 +125,6 @@ export default {
 
     onMounted(getCategories)
     onMounted(getEventData)
-
-
-
-
 
 
     return {

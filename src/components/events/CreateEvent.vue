@@ -328,7 +328,6 @@ export default {
       errorMsg.value.backendError = ''
 
       if (checkInputs()) {
-        
         let eventData = {}
         eventData.title = title.value
         eventData.description = description.value

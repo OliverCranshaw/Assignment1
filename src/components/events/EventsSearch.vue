@@ -151,7 +151,6 @@ export default {
     const sortOptions = ref('DATE_ASC')
 
     const searchRequest = () => {
-
       tableData.value = []
 
       if (searchInput.value.length < 1 && filterOptions.value.length < 1) {
@@ -466,7 +465,6 @@ export default {
 
     onMounted(getCategories)
     onMounted(getAllEvents)
-
 
     const pagedTableData = computed(() => {
       return tableData.value.slice(pageSize.value * pageNum.value - pageSize.value, pageSize.value * pageNum.value)
