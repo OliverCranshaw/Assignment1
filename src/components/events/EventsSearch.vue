@@ -3,8 +3,7 @@
     <el-header>
       <Header></Header>
     </el-header>
-    <el-divider></el-divider>
-    <el-main>
+    <el-main style="padding-top: 50px">
       <el-row :gutter="10">
         <el-col :span="4">
         </el-col>

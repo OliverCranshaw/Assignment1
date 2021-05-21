@@ -1,25 +1,18 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="6">
-      <div>
-        <h1>
-          Events Application
-        </h1>
-      </div>
-    </el-col>
-    <el-col :span="12" align="center">
-      <el-button v-if="authenticated" @click="routeToCreateEvent" type="primary">Create Event</el-button>
-      <el-button @click="routeToSearchEvents" type="primary">Search Events</el-button>
-    </el-col>
-    <el-col :span="6">
-      <div align="right">
-        <el-button v-if="authenticated" @click="routeToProfile" type="primary">Profile</el-button>
-        <el-button v-else @click="registerRedirect" type="primary">Register</el-button>
-        <el-button v-if="authenticated" @click="logoutRequest" type="primary">Logout</el-button>
-        <el-button v-else @click="loginRedirect" type="primary">Login</el-button>
-      </div>
-    </el-col>
-  </el-row>
+  <el-menu v-if="!authenticated" class="el-menu-demo" mode="horizontal">
+    <img src="../assets/eventsLogo.png" class="pad-right-more">
+    <el-menu-item index="1" @click="routeToSearchEvents">Search Events</el-menu-item>
+    <el-menu-item index="2" @click="registerRedirect">Register</el-menu-item>
+    <el-menu-item index="3" @click="loginRedirect">Login</el-menu-item>
+  </el-menu>
+  <el-menu v-else class="el-menu-demo" mode="horizontal">
+    <img src="../assets/eventsLogo.png" class="pad-right">
+    <el-menu-item index="1" @click="routeToCreateEvent">Create Event</el-menu-item>
+    <el-menu-item index="2" @click="routeToSearchEvents">Search Events</el-menu-item>
+    <el-menu-item index="3" @click="routeToProfile">Profile</el-menu-item>
+    <el-menu-item index="4" @click="logoutRequest">Logout</el-menu-item>
+  </el-menu>
+  <div class="line"></div>
 </template>
 
 <script>
@@ -59,15 +52,14 @@ name: "Header",
           .then(() => {
             store.commit("updateToken", "")
             store.commit("updateUser", null)
-            router.push(`login`)
+            router.push({name: 'Login'})
 
           }, (err) => {
 
             console.log(err.response.statusText)
             store.commit("updateToken", "")
             store.commit("updateUser", null)
-            router.push(`login`)
-
+            router.push({name: 'Login'})
 
           });
     }
@@ -87,5 +79,18 @@ name: "Header",
 </script>
 
 <style scoped>
+.el-menu-demo {
+  width: auto;
+  justify-content: flex-end;
+  display: flex;
+}
+
+.pad-right {
+  padding-right: 200px;
+}
+
+.pad-right-more {
+  padding-right: 320px;
+}
 
 </style>

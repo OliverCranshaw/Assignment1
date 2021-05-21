@@ -3,8 +3,7 @@
     <el-header>
       <Header></Header>
     </el-header>
-    <el-divider></el-divider>
-    <main>
+    <main style="padding-top: 50px">
       <div align="center">
         <h1>Welcome to Events App</h1>
       </div>

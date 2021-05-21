@@ -3,8 +3,7 @@
     <el-header>
       <Header></Header>
     </el-header>
-    <el-divider></el-divider>
-    <el-main>
+    <el-main style="padding-top: 50px">
       <el-row>
         <el-col :span="9">
           <div class="grid-content"></div>
@@ -342,7 +341,7 @@ export default {
           eventData.fee = Number(fee.value)
         }
         if (eventUrl.value != null) {
-          eventData.url = eventUrl.value
+          eventData.url = "https://" + eventUrl.value
         }
         if (venue.value != null) {
           eventData.venue = venue.value
