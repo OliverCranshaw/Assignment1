@@ -303,7 +303,7 @@ export default {
           getEventData()
           getEventImage()
           getAttendees()
-          setTimeout(pageReady, 500)
+          setTimeout(pageReady, 700)
         });
 
     return {
