@@ -1,4 +1,5 @@
 <template>
+  <div v-if="dataReady">
   <el-container>
     <el-header>
       <Header></Header>
@@ -122,6 +123,7 @@
       </el-row>
     </el-main>
   </el-container>
+  </div>
 </template>
 
 <script>
@@ -136,6 +138,8 @@ export default {
     Header,
   },
   setup() {
+
+    const dataReady = ref(false)
 
     const router = useRouter()
 
@@ -462,9 +466,6 @@ export default {
       router.push(`/events/${row.eventId}`)
     }
 
-    onMounted(getCategories)
-    onMounted(getAllEvents)
-
     const pagedTableData = computed(() => {
       return tableData.value.slice(pageSize.value * pageNum.value - pageSize.value, pageSize.value * pageNum.value)
     });
@@ -473,9 +474,20 @@ export default {
       pageNum.value = pageNumber;
     }
 
+    const pageReady = () => {
+      dataReady.value = true
+    }
+
+    onMounted(() => {
+      getCategories()
+      getAllEvents()
+      setTimeout(pageReady, 200)
+    });
+
 
 
     return {
+      dataReady,
       searchInput,
       tableData,
       searchRequest,

@@ -1,11 +1,11 @@
 <template>
-  <el-menu v-if="!authenticated" class="el-menu-demo" mode="horizontal">
+  <el-menu v-if="!authenticated" class="menu-nav" mode="horizontal">
     <img src="../assets/eventsLogo.png" class="pad-right-more">
     <el-menu-item index="1" @click="routeToSearchEvents">Search Events</el-menu-item>
     <el-menu-item index="2" @click="registerRedirect">Register</el-menu-item>
     <el-menu-item index="3" @click="loginRedirect">Login</el-menu-item>
   </el-menu>
-  <el-menu v-else class="el-menu-demo" mode="horizontal">
+  <el-menu v-else class="menu-nav" mode="horizontal">
     <img src="../assets/eventsLogo.png" class="pad-right">
     <el-menu-item index="1" @click="routeToCreateEvent">Create Event</el-menu-item>
     <el-menu-item index="2" @click="routeToSearchEvents">Search Events</el-menu-item>
@@ -79,7 +79,7 @@ name: "Header",
 </script>
 
 <style scoped>
-.el-menu-demo {
+.menu-nav {
   width: auto;
   justify-content: flex-end;
   display: flex;
@@ -92,5 +92,6 @@ name: "Header",
 .pad-right-more {
   padding-right: 320px;
 }
+
 
 </style>

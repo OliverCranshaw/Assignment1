@@ -44,7 +44,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :span="6" align="center">
+        <el-col :span="5" align="center">
           <div>
             <el-card :body-style="{ padding: '0px' }">
               <div style="padding: 14px;">
@@ -65,7 +65,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :span="9" align="center">
+        <el-col :span="10" align="center">
           <div class="similarTable">
             <el-card :body-style="{ padding: '0px' }">
               <div style="padding: 14px;">
@@ -292,11 +292,6 @@ export default {
     const pageReady = () => {
       dataReady.value = true
     }
-
-    // onMounted(getCategories)
-    // onMounted(getEventData)
-    // onMounted(getEventImage)
-    // onMounted(getAttendees)
 
     onMounted(() => {
           getCategories()
