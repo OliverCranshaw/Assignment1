@@ -26,8 +26,11 @@
                 <div v-if="hasEventVenue" align="left" class="pad-top">
                   <h6>Venue: {{eventData.venue}}</h6>
                 </div>
-                <div align="left" class="pad-top">
-                  <h6>Fee: {{eventData.fee}}</h6>
+                <div v-if="isFee" align="left" class="pad-top">
+                  <h6>Fee: ${{eventData.fee}}</h6>
+                </div>
+                <div v-else align="left" class="pad-top">
+                  <h6>Fee: Free</h6>
                 </div>
                 <div align="left" class="pad-top">
                   <h6>Categories: {{categoriesNames}}</h6>
@@ -49,8 +52,11 @@
             <el-card :body-style="{ padding: '0px' }">
               <div style="padding: 14px;">
                 <h3>Attendees:</h3>
-                <div v-if="eventData.requiresAttendanceControl" align="center">
+                <div v-if="eventData.capacity" align="center">
                   <h5 class="smaller-heading">Capacity: {{ eventData.attendeeCount }}/{{eventData.capacity}}</h5>
+                </div>
+                <div v-else align="center">
+                  <h5 class="smaller-heading">Total: {{ eventData.attendeeCount }}</h5>
                 </div>
                 <div v-for="(attendee) in attendeeList" v-bind:key="attendee">
                   <div align="left" class="pad-top">
@@ -143,6 +149,8 @@ export default {
     const attendeeList = ref([])
     const attendeeImageList = ref({})
 
+    const isFee = ref(true)
+
 
     const getEventData = () => {
 
@@ -161,7 +169,7 @@ export default {
               }
           }
           if (eventData.value.fee == 0) {
-            eventData.value.fee = 'Free'
+            isFee.value = false
           }
           if (eventData.value.url == null) {
             hasEventUrl.value = false
@@ -311,7 +319,8 @@ export default {
       categoriesNames,
       defaultNeeded,
       attendeeList,
-      attendeeImageList
+      attendeeImageList,
+      isFee
     }
   }
 
