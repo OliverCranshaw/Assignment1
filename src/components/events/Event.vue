@@ -1,4 +1,5 @@
 <template>
+  <div v-if="dataReady">
   <el-container>
     <el-header>
       <Header></Header>
@@ -106,6 +107,7 @@
 
     </el-main>
   </el-container>
+  </div>
 </template>
 
 <script>
@@ -122,6 +124,8 @@ export default {
   },
 
   setup() {
+
+    const dataReady = ref(false)
 
     const router = useRouter()
     const route = useRoute()
@@ -285,12 +289,25 @@ export default {
 
     }
 
-    onMounted(getCategories)
-    onMounted(getEventData)
-    onMounted(getEventImage)
-    onMounted(getAttendees)
+    const pageReady = () => {
+      dataReady.value = true
+    }
+
+    // onMounted(getCategories)
+    // onMounted(getEventData)
+    // onMounted(getEventImage)
+    // onMounted(getAttendees)
+
+    onMounted(() => {
+          getCategories()
+          getEventData()
+          getEventImage()
+          getAttendees()
+          setTimeout(pageReady, 500)
+        });
 
     return {
+      dataReady,
       eventData,
       similarEvents,
       eventRouter,
