@@ -4,206 +4,216 @@
       <Header></Header>
     </el-header>
     <el-main style="padding-top: 50px">
-      <el-row :gutter="10">
-        <el-col :span="10">
-          <div v-if="defaultNeeded" align="right">
-            <img src="../../assets/defaultProfile.jpg" height="100" width="100"/>
-          </div>
-          <div v-else align="right">
-            <el-button @click="deleteImageRequest" type="primary" icon="el-icon-delete"></el-button>
-            <img :src="imageURL" height="100" width="100"/>
-          </div>
+      <el-row>
+        <el-col :span="6"></el-col>
+        <el-col :span="12">
+        <el-card style="margin-bottom: 25px">
+          <el-row :gutter="10">
+            <el-col :span="10">
+              <div v-if="defaultNeeded" align="right">
+                <img src="../../assets/defaultProfile.jpg" height="100" width="100"/>
+              </div>
+              <div v-else align="right">
+                <el-button @click="deleteImageRequest" type="primary" icon="el-icon-delete"></el-button>
+                <img :src="imageURL" height="100" width="100"/>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <h2>My Details</h2>
+              </div>
+            </el-col>
+            <el-col :span="10">
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="10">
+              <div align="right">
+                <h5>First Name: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                {{firstName}}
+              </div>
+            </el-col>
+            <el-col :span="10">
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="10">
+              <div align="right">
+                <h5>Last Name: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                {{lastName}}
+              </div>
+            </el-col>
+            <el-col :span="10">
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="10">
+              <div align="right">
+                <h5>Email: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                {{email}}
+              </div>
+            </el-col>
+            <el-col :span="10">
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="10">
+            </el-col>
+            <el-col :span="4" >
+              <div align="center" v-if="editing">
+              </div>
+              <div align="center" v-else>
+                <el-button @click="editRequest" type="primary">Edit Details</el-button>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <el-button v-if="editing" @click="cancelEdit" type="primary">Cancel Edit</el-button>
+            </el-col>
+          </el-row>
+        </el-card>
+        <el-card v-if="editing">
+          <el-row :gutter="10" v-if="editing">
+            <el-col :span="10">
+              <div align="right">
+                <h5>New First Name:</h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <el-input maxlength="30"
+                    placeholder="New First name"
+                    v-model="newFirstName"
+                    clearable>
+                </el-input>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div align="left" style="color: red">
+                <span>{{firstNameError}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10" v-if="editing">
+            <el-col :span="10">
+              <div align="right">
+                <h5>New Last Name: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <el-input maxlength="30"
+                    placeholder="New Last name"
+                    v-model="newLastName"
+                    clearable>
+                </el-input>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div align="left" style="color: red">
+                <span>{{lastNameError}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10" v-if="editing">
+            <el-col :span="10">
+              <div align="right">
+                <h5>New Email: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <el-input maxlength="30"
+                    placeholder="New Email"
+                    v-model="newEmail"
+                    clearable>
+                </el-input>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div align="left" style="color: red">
+                <span>{{emailError}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10" v-if="editing">
+            <el-col :span="10">
+              <div align="right">
+                <h5>New Password: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <el-input maxlength="30" placeholder="Password" v-model="newPassword" show-password></el-input>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div align="left" style="color: red">
+                <span>{{passwordError}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10" v-if="editing">
+            <el-col :span="10">
+              <div align="right">
+                <h5>Current Password: </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <el-input maxlength="30" placeholder="Password" v-model="currentPassword" show-password></el-input>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div align="left" style="color: red">
+                <span>{{currentPasswordError}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10" v-if="editing">
+            <el-col :span="10">
+              <div align="right">
+                <h5>Upload New Profile Image (Optional): </h5>
+              </div>
+            </el-col>
+            <el-col :span="4" >
+              <div>
+                <input type="file" accept="image/jpeg,image/png,image/gif" id="file" @change="onChange" >
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div align="left" style="color: red">
+                <span>{{imageUploadError}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="10"></el-col>
+            <el-col :span="4">
+              <div align="right">
+                <el-button v-if="editing" @click="confirmEdit" type="primary">Save Changes</el-button>
+              </div>
+            </el-col>
+            <el-col :span="10">
+              <div v-if="errorFlag" style="color:red;">
+                {{error }}
+              </div>
+            </el-col>
+          </el-row>
+        </el-card>
         </el-col>
-        <el-col :span="4" >
-          <div>
-            <h2>My Details</h2>
-          </div>
-        </el-col>
-        <el-col :span="10">
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="10">
-          <div align="right">
-            <h5>First Name: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            {{firstName}}
-          </div>
-        </el-col>
-        <el-col :span="10">
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="10">
-          <div align="right">
-            <h5>Last Name: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            {{lastName}}
-          </div>
-        </el-col>
-        <el-col :span="10">
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="10">
-          <div align="right">
-            <h5>Email: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            {{email}}
-          </div>
-        </el-col>
-        <el-col :span="10">
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="10">
-        </el-col>
-        <el-col :span="4" >
-          <div align="center" v-if="editing">
-          </div>
-          <div align="center" v-else>
-            <el-button @click="editRequest" type="primary">Edit Details</el-button>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <el-button v-if="editing" @click="cancelEdit" type="primary">Cancel Edit</el-button>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" v-if="editing">
-        <el-col :span="10">
-          <div align="right">
-            <h5>New First Name:</h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            <el-input maxlength="30"
-                placeholder="New First name"
-                v-model="newFirstName"
-                clearable>
-            </el-input>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div align="left" style="color: red">
-            <span>{{firstNameError}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" v-if="editing">
-        <el-col :span="10">
-          <div align="right">
-            <h5>New Last Name: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            <el-input maxlength="30"
-                placeholder="New Last name"
-                v-model="newLastName"
-                clearable>
-            </el-input>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div align="left" style="color: red">
-            <span>{{lastNameError}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" v-if="editing">
-        <el-col :span="10">
-          <div align="right">
-            <h5>New Email: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            <el-input maxlength="30"
-                placeholder="New Email"
-                v-model="newEmail"
-                clearable>
-            </el-input>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div align="left" style="color: red">
-            <span>{{emailError}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" v-if="editing">
-        <el-col :span="10">
-          <div align="right">
-            <h5>New Password: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            <el-input maxlength="30" placeholder="Password" v-model="newPassword" show-password></el-input>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div align="left" style="color: red">
-            <span>{{passwordError}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" v-if="editing">
-        <el-col :span="10">
-          <div align="right">
-            <h5>Current Password: </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            <el-input maxlength="30" placeholder="Password" v-model="currentPassword" show-password></el-input>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div align="left" style="color: red">
-            <span>{{currentPasswordError}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" v-if="editing">
-        <el-col :span="10">
-          <div align="right">
-            <h5>Upload New Profile Image (Optional): </h5>
-          </div>
-        </el-col>
-        <el-col :span="4" >
-          <div>
-            <input type="file" accept="image/jpeg,image/png,image/gif" id="file" @change="onChange" >
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div align="left" style="color: red">
-            <span>{{imageUploadError}}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="10"></el-col>
-        <el-col :span="4">
-          <div align="right">
-            <el-button v-if="editing" @click="confirmEdit" type="primary">Save Changes</el-button>
-          </div>
-        </el-col>
-        <el-col :span="10">
-          <div v-if="errorFlag" style="color:red;">
-            {{error }}
-          </div>
-        </el-col>
+        <el-col :span="6"/>
       </el-row>
     </el-main>
   </el-container>

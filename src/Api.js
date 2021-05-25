@@ -29,7 +29,7 @@ export default {
     getCategories: () => instance.get('events/categories'),
     getEvent: (id) => instance.get(`/events/${id}`),
     getSimilarEvents: (filterQuery) => instance.get(`events`, {params: {categoryIds: filterQuery, sortBy: 'DATE_ASC'}}),
-    modifyEvent: (id) => instance.patch(`/events/${id}`),
+    modifyEvent: (id, eventData) => instance.patch(`/events/${id}`, eventData),
     deleteEvent: (id) => instance.delete(`/events/${id}`),
     getEventImage: (id) => instance.get(`/events/${id}/image`, {
         responseType: 'arraybuffer'}),

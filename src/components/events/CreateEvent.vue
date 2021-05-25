@@ -231,7 +231,7 @@ export default {
       if (date.value == '') {
         errorMsg.value.date = 'You must provide an event date'
         valid = false
-      } else if (date.value.getDate() <= currentDateTime.getDate()) {
+      } else if (date.value < currentDateTime) {
         errorMsg.value.date = 'The date must be in the future'
         valid = false
       } else {
@@ -331,6 +331,7 @@ export default {
         eventData.title = title.value
         eventData.description = description.value
         eventData.categoryIds = catSelected.value
+        eventData.date = date.value.setHours(date.value.getHours() + 24)
         eventData.date = date.value.toISOString().slice(0, -1).replace('T', ' ')
         eventData.isOnline = isOnline.value
         eventData.requiresAttendanceControl = controlAttendanceStatus.value == "true"
