@@ -13,6 +13,7 @@ import CreateEvent from "@/components/events/CreateEvent";
 import Event from "@/components/events/Event";
 import NotFound from "@/components/NotFound";
 import Landing from "@/components/Landing";
+import ManageAttendees from "@/components/events/ManageAttendees";
 
 const routes = [
 
@@ -41,6 +42,11 @@ const routes = [
     {
         path: "/users/:id",
         component: Profile
+    },
+    {
+        path: "/events/:id/attendees",
+        component: ManageAttendees,
+        name: 'ManageAttendees'
     },
     {
         path: "/:catchAll(.*)",

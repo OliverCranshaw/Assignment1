@@ -66,6 +66,12 @@
                 <div v-else align="center">
                   <h5 class="smaller-heading">Total: {{ eventData.attendeeCount }}</h5>
                 </div>
+                <div v-if="canRequestAttendance && !isEventInPast" class="bottom" align="end">
+                  <el-button @click="requestAttendance" type="text" class="button">Request Attendance</el-button>
+                </div>
+                <div v-if="isAlreadyAttending && !isEventInPast && canCancelAttendance" class="bottom" align="end">
+                  <el-button @click="requestRemoval" type="text" class="button">Cancel Attendance</el-button>
+                </div>
                 <div v-for="(attendee) in attendeeList" v-bind:key="attendee">
                   <div align="left" class="pad-top">
                     <h6 class="image-inline">{{attendee.firstName}} {{attendee.lastName}} ({{attendee.type}})</h6>
@@ -73,7 +79,7 @@
                   </div>
                 </div>
                 <div v-if="isEventOrganizer && !isEventInPast" class="bottom" align="end">
-                  <el-button type="text" class="button">Manage Attendees</el-button>
+                  <el-button @click="manageAttendees" type="text" class="button">Manage Attendees</el-button>
                 </div>
               </div>
             </el-card>
@@ -84,7 +90,7 @@
             <el-card :body-style="{ padding: '0px' }">
               <div style="padding: 14px;">
                 <div>
-                  <h3> Similar Events: </h3>
+                  <h3> Similar Events </h3>
                 </div>
                 <el-table
                     :data="similarEvents"
@@ -270,6 +276,10 @@ export default {
 
     const isFee = ref(true)
 
+    const canRequestAttendance = ref(false)
+    const canCancelAttendance = ref(false)
+
+
     const editEventVisible = ref(false)
 
     const eventEditData = ref({
@@ -291,6 +301,9 @@ export default {
     const isEventInPast = ref(false)
 
     const checkedCapacity = ref(false)
+
+    const isAlreadyAttending = ref(false)
+
 
     const errorMsg = ref({
       'imageUploadError': '',
@@ -439,11 +452,27 @@ export default {
                   console.log(err)
                   })
               attendeeList.value.push(response.data[row])
+            } else if (response.data[row].attendeeId == store.state.user_id) {
+              isAlreadyAttending.value = true
             }
           }
-          }, (err) => {
-          console.log(err)
-        })
+
+          for (const row in attendeeList.value) {
+            if (attendeeList.value[row].attendeeId == store.state.user_id) {
+              isAlreadyAttending.value = true
+              canCancelAttendance.value = true
+            }
+          }
+          if (eventData.value.capacity == null && !isAlreadyAttending.value) {
+            canRequestAttendance.value = true
+          } else {
+            if (eventData.value.attendeeCount < eventData.value.capacity && !isAlreadyAttending.value) {
+              canRequestAttendance.value = true
+            }
+          }
+        }, (err) => {
+        console.log(err)
+      })
     }
 
 
@@ -711,12 +740,39 @@ export default {
       dataReady.value = true
     }
 
+
+    const requestAttendance = () => {
+      if (store.state.auth_token == null || store.state.user_id == null) {
+        router.push('/users/login')
+      } else {
+        api.createAttendee(route.params.id)
+          .then(() => {
+            router.go(0)
+          }, (err) => {
+            console.log(err)
+          })
+      }
+    }
+
+    const requestRemoval = () => {
+      api.deleteAttendee(route.params.id)
+          .then(() => {
+            router.go(0)
+          }, (err) => {
+            console.log(err)
+          })
+    }
+
+    const manageAttendees = () => {
+      router.push({ name: 'ManageAttendees', params: { id: `${route.params.id}`}})
+    }
+
     onMounted(() => {
           getCategories()
           getEventData()
           getEventImage()
           getAttendees()
-          setTimeout(pageReady, 700)
+      setTimeout(pageReady, 700)
         });
 
     return {
@@ -746,7 +802,14 @@ export default {
       isEventOrganizer,
       checkedCapacity,
       isEventInPast,
-      onDeleteEvent
+      onDeleteEvent,
+      canRequestAttendance,
+      requestAttendance,
+      isAlreadyAttending,
+      requestRemoval,
+      manageAttendees,
+      canCancelAttendance
+
     }
   }
 

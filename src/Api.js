@@ -38,7 +38,7 @@ export default {
     getAttendees: (id) => instance.get(`/events/${id}/attendees`),
     createAttendee: (id) => instance.post(`/events/${id}/attendees`),
     deleteAttendee: (id) => instance.delete(`/events/${id}/attendees`),
-    modifyAttendee: (eventId, userId) => instance.patch(`/events/${eventId}/attendees/${userId}`),
+    modifyAttendee: (eventId, userId, status) => instance.patch(`/events/${eventId}/attendees/${userId}`, status),
 }
 
 
