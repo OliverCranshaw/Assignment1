@@ -33,14 +33,17 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3" style="margin-top: 6px">
+          <el-checkbox v-model="showAlreadyHappened">Show Already Happended</el-checkbox>
+        </el-col>
+        <el-col :span="2" style="margin-left: -15px">
           <div align="left">
             <el-button @click="searchRequest" type="primary">Search</el-button>
           </div>
         </el-col>
-        <el-col :span="9">
+        <el-col :span="6" style="margin-top: 7px">
           <div align="left">
-            <h5>Double Click an event to view further details</h5>
+            <h6>Double Click an event to view further details</h6>
           </div>
         </el-col>
       </el-row>
@@ -153,6 +156,8 @@ export default {
     const filterOptions = ref([])
     const sortOptions = ref('DATE_ASC')
 
+    const showAlreadyHappened = ref(false)
+
     const searchRequest = () => {
       tableData.value = []
 
@@ -165,6 +170,17 @@ export default {
               for (const row in response.data) {
                 if (response.data[row].title.toLowerCase().includes(searchInput.value.toLowerCase())) {
                   tableData.value.push(response.data[row])
+                }
+              }
+
+              if (!showAlreadyHappened.value) {
+                for (let i = 0; i < tableData.value.length; i++) {
+                  const now = new Date()
+                  console.log(Date.parse(tableData.value[i].date) < now)
+                  if (Date.parse(tableData.value[i].date) < now) {
+                    tableData.value.splice(i, 1);
+                    i--;
+                  }
                 }
               }
 
@@ -235,6 +251,17 @@ export default {
 
               tableData.value = response.data
 
+              if (!showAlreadyHappened.value) {
+                for (let i = 0; i < tableData.value.length; i++) {
+                  const now = new Date()
+                  console.log(Date.parse(tableData.value[i].date) < now)
+                  if (Date.parse(tableData.value[i].date) < now) {
+                    tableData.value.splice(i, 1);
+                    i--;
+                  }
+                }
+              }
+
               for (const row in tableData.value) {
 
                 tableData.value[row].hostName = `${tableData.value[row].organizerFirstName} ${tableData.value[row].organizerLastName}`
@@ -303,6 +330,16 @@ export default {
               for (const row in response.data) {
                 if (response.data[row].title.toLowerCase().includes(searchInput.value.toLowerCase())) {
                   tableData.value.push(response.data[row])
+                }
+              }
+              if (!showAlreadyHappened.value) {
+                for (let i = 0; i < tableData.value.length; i++) {
+                  const now = new Date()
+                  console.log(Date.parse(tableData.value[i].date) < now)
+                  if (Date.parse(tableData.value[i].date) < now) {
+                    tableData.value.splice(i, 1);
+                    i--;
+                  }
                 }
               }
 
@@ -385,7 +422,19 @@ export default {
 
             tableData.value = response.data
 
+            if (!showAlreadyHappened.value) {
+              for (let i = 0; i < tableData.value.length; i++) {
+                const now = new Date()
+                console.log(Date.parse(tableData.value[i].date) < now)
+                if (Date.parse(tableData.value[i].date) < now) {
+                  tableData.value.splice(i, 1);
+                  i--;
+                }
+              }
+            }
+
             for (const row in tableData.value) {
+              console
 
               tableData.value[row].hostName = `${tableData.value[row].organizerFirstName} ${tableData.value[row].organizerLastName}`
               tableData.value[row].date = tableData.value[row].date.slice(0, -8)
@@ -497,6 +546,7 @@ export default {
       filterOptions,
       catList,
       sortOptionsSet,
+      showAlreadyHappened
     }
   }
 

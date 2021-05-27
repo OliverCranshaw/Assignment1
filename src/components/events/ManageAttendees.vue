@@ -8,6 +8,7 @@
           <el-col :span="5"></el-col>
           <el-col :span="14" align="center">
             <el-card>
+              <h3>Double click a row to edit that user's attendance</h3>
               <el-table
                   :data="attendeeList"
                   :default-sort = "{prop: 'dateOfInterest', order: 'ascending'}"
@@ -54,9 +55,9 @@
         <template #footer>
     <span class="dialog-footer">
       <el-button align="left" @click="editDialog = false">Cancel</el-button>
-      <el-button type="primary" @click="changeToRejected">Rejected</el-button>
-      <el-button type="primary" @click="changeToPending">Pending</el-button>
-      <el-button type="primary" @click="changeToAccepted">Accept</el-button>
+      <el-button type="danger" @click="changeToRejected">Rejected</el-button>
+      <el-button type="warning" @click="changeToPending">Pending</el-button>
+      <el-button type="success" @click="changeToAccepted">Accept</el-button>
 
     </span>
         </template>
